@@ -14,8 +14,6 @@ HRESULT LoopbackCapture(
 HRESULT WriteWaveHeader(HMMIO hFile, LPCWAVEFORMATEX pwfx, MMCKINFO *pckRIFF, MMCKINFO *pckData);
 HRESULT FinishWaveFile(HMMIO hFile, MMCKINFO *pckRIFF, MMCKINFO *pckData);
 
-BYTE DataBuffer[384000];
-
 DWORD WINAPI LoopbackCaptureThreadFunction(LPVOID pContext) {
 	LoopbackCaptureThreadFunctionArguments *pArgs =
 		(LoopbackCaptureThreadFunctionArguments*)pContext;
@@ -48,9 +46,6 @@ HRESULT LoopbackCapture(
 	PUINT32 pnFrames
 ) {
 	HRESULT hr;
-
-	//typedef mutex myMutex;
-	//static myMutex sm;
 
 	_setmode(_fileno(stdout), _O_BINARY);
 
@@ -209,7 +204,6 @@ HRESULT LoopbackCapture(
 	DWORD dwWaitResult;
 
 	bool bDone = false;
-	bool bFirstPacket = true;
 	for (UINT32 nPasses = 0; !bDone; nPasses++) {
 		// drain data while it is available
 		UINT32 nNextPacketSize;
@@ -230,19 +224,17 @@ HRESULT LoopbackCapture(
 				NULL,
 				NULL
 			);
+
+			int lBytesToWrite = nNumFramesToRead * nBlockAlign;
+
 			if (FAILED(hr)) {
 				ERR(L"IAudioCaptureClient::GetBuffer failed on pass %u after %u frames: hr = 0x%08x", nPasses, *pnFrames, hr);
 				getchar();
 				return hr;
 			}
 
-			if (bFirstPacket && AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY == dwFlags) {
-				//LOG(L"%s", L"Probably spurious glitch reported on first packet");
-			}
-			else if (0 != dwFlags) {
-				LOG(L"IAudioCaptureClient::GetBuffer set flags to 0x%08x on pass %u after %u frames", dwFlags, nPasses, *pnFrames);
-				getchar();
-				return E_UNEXPECTED;
+			if (0 != dwFlags) {
+				ZeroMemory(pData, lBytesToWrite);
 			}
 
 			if (0 == nNumFramesToRead) {
@@ -250,8 +242,6 @@ HRESULT LoopbackCapture(
 				getchar();
 				return E_UNEXPECTED;
 			}
-
-			int lBytesToWrite = nNumFramesToRead * nBlockAlign;
 #pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
 
 			int lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
@@ -270,8 +260,6 @@ HRESULT LoopbackCapture(
 				getchar();
 				return hr;
 			}
-
-			bFirstPacket = false;
 		}
 
 		if (FAILED(hr)) {
