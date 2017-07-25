@@ -26,11 +26,13 @@ People have also been able to stream from the Windows input device e.g. a microp
 ```
 linco.exe -B 16 -C 2 -R 44100 --device 1 | plink -v 192.168.11.5 -l user -pw password "cat - | pacat --playback"
 ```
+# "Install"
+- Have plink and [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) installed and configured in your Environment Variables Path.
+- Download this repository and execute the command in the "Debug" directory or use the WLStream icon.
+- To use the WLStream icon don't forget to change `wlstream.bat` file contained in the "Debug" directory with the correct linux host's ipAddress and login infos (better connect through ssh before to check connection with your device).
+- Make sure your Linux device is running [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/).
 
-This code was an adaptation made by [Rinaldi Segecin](https://github.com/rsegecin) from [this code](https://github.com/mvaneerde/blog/tree/develop/loopback-capture) by Matthew van Eerde.
+# ToDo
+- Create a cool WLStream icon design.
 
-To use the WLStream icon don't forget to change `wlstream.bat` file contained in the "Debug" directory with the correct linux host ipAddress and login infos.
-
-ToDo:
-
-Create a WLStream icon design.
+**This code was an adaptation made by [Rinaldi Segecin](https://github.com/rsegecin) from [this code](https://github.com/mvaneerde/blog/tree/develop/loopback-capture) by Matthew van Eerde.**
