@@ -12,16 +12,15 @@ HRESULT open_file(LPCWSTR szFileName, HMMIO *phFile);
 
 void usage(LPCWSTR exe) {
 	LOG(
-		L"%ls -?\n"
-		L"%ls --list-devices\n"
-		L"%ls [--device \"Device long name\"] [--file \"file name\"] [--int-16]\n"
-		L"\n"
-		L"    -? prints this message.\n"
-		L"    --list-devices displays the long names of all active playback devices.\n"
-		L"    --device captures from the specified device (default if omitted)\n"
-		L"    --file saves the output to a file (%ls if omitted)\n"
-		L"    --int-16 attempts to coerce data to 16-bit integer format",
-		exe, exe, exe, DEFAULT_FILE
+		L"\n%ls (Starts to dump audio data from the first playback device found)\n"
+		L"\n-h or ? \t prints this message.\n"
+		L"--device \t captures from the specified device (default if omitted)\n"
+		L"--file \t\t saves the output to a wav file\n"
+		L"--int-16 \t attempts to coerce data to 16-bit integer format\n"
+		L"--lsdev \t list devices displays the long names of all active playback devices.\n"
+		L"\nUsage: %ls [--device \"Device long name\"] [--file \"file name\"] [--int-16]\n"
+		L"E.g: loopback-capture.exe --device \"Speakers(Realtek High Definition Audio)\" --file \"output.wav\"\n",
+		exe, exe
 	);
 }
 
@@ -34,13 +33,13 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
 {
 	switch (argc) {
 	case 2:
-		if (0 == _wcsicmp(argv[1], L"-?") || 0 == _wcsicmp(argv[1], L"/?")) {
+		if (0 == _wcsicmp(argv[1], L"-h") || 0 == _wcsicmp(argv[1], L"\?")) {
 			// print usage but don't actually capture
 			hr = S_FALSE;
 			usage(argv[0]);
 			return;
 		}
-		else if (0 == _wcsicmp(argv[1], L"--list-devices")) {
+		else if (0 == _wcsicmp(argv[1], L"--lsdev")) {
 			// list the devices but don't actually capture
 			hr = list_devices();
 
@@ -93,6 +92,9 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
 				}
 
 				m_szFilename = argv[i];
+
+				hr = open_file(m_szFilename, &m_hFile);
+
 				continue;
 			}
 
@@ -119,17 +121,6 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
 			if (FAILED(hr)) {
 				return;
 			}
-		}
-
-		// if no filename specified, use default
-		if (NULL == m_szFilename) {
-			m_szFilename = DEFAULT_FILE;
-		}
-
-		// open file
-		hr = open_file(m_szFilename, &m_hFile);
-		if (FAILED(hr)) {
-			return;
 		}
 	}
 }
@@ -323,9 +314,9 @@ HRESULT get_specific_device(LPCWSTR szLongName, IMMDevice **ppMMDevice) {
 			return E_UNEXPECTED;
 		}
 
-		// is it a match?
+		// is it a matchh
 		if (0 == _wcsicmp(pv.pwszVal, szLongName)) {
-			// did we already find it?
+			// did we already find ith
 			if (NULL == *ppMMDevice) {
 				*ppMMDevice = pMMDevice;
 				pMMDevice->AddRef();

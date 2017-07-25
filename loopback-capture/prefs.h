@@ -3,7 +3,7 @@
 class CPrefs {
 public:
 	IMMDevice *m_pMMDevice;
-	HMMIO m_hFile;
+	HMMIO m_hFile = NULL;
 	bool m_bInt16;
 	PWAVEFORMATEX m_pwfx;
 	LPCWSTR m_szFilename;

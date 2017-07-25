@@ -1,26 +1,30 @@
 # WLStream
 
-The aim for this software is to be able to stream audio from a Windows output device so Pulse Audio will be able to play it back on a Linux host. The communication between the two is done with `plink` from Putty.
-This software today prints on stdout the audio data from a Windows output device and also generates a wave file on the end. 
-
-For some reason `pacat` doesn't accept the stream for the command bellow:
+The aim for this software is to be able to stream audio from a Windows output device so Pulse Audio will be able to play it back on a Linux host. The communication between the two is done with `plink` from Putty. `loopback-capture` prints on stdout data formated as `PCM floating signed 32 bits little endian` from a Windows output device. You also can list the available devices, choose a specific device, create a wav file and chose the PCM's size.
 
 ```
-loopback-capture | plink -v 192.168.11.2 -l rinaldi -pw password "cat - | pacat --playback --format float32le --rate 48000 --volume 30000"
+loopback-capture.exe (Starts to dump audio data from the first playback device found)
+
+-h or ?          prints this message.
+--device         captures from the specified device (default if omitted)
+--file           saves the output to a wav file
+--int-16         attempts to coerce data to 16-bit integer format
+--lsdev          list devices displays the long names of all active playback devices.
+
+Usage: loopback-capture.exe [--device "Device long name"] [--file "file name"] [--int-16]
+E.g: loopback-capture.exe --device "Speakers(Realtek High Definition Audio)" --file "output.wav"
 ```
 
-But works if first run `loopback-capture` to an output file and them read to the stream with `cat`.
+Follows the command to stream the data:
 
 ```
-loopback-capture.exe > tmp
-cat tmp | plink -v 192.168.11.2 -l rinaldi -pw password "cat - | pacat --playback --format float32le --rate 48000 --volume 30000"
+loopback-capture | plink -v 192.168.11.2 -l user -pw password "cat - | pacat --playback --format float32le --rate 48000 --volume 30000"
 ```
 
-
-People have been able to stream from the Windows input device e.g. a microphone as shown in the command bellow:
+People have also been able to stream from the Windows input device e.g. a microphone as shown in the command bellow:
 
 ```
-linco.exe -B 16 -C 2 -R 44100 --device 1 | plink -v 192.168.11.5 -l rinaldi -pw password "cat - | pacat --playback"
+linco.exe -B 16 -C 2 -R 44100 --device 1 | plink -v 192.168.11.5 -l user -pw password "cat - | pacat --playback"
 ```
 
-[Originally](https://github.com/mvaneerde/blog/tree/develop/loopback-capture) created by Matthew van Eerde.
+This code was an adaptation made by [Rinaldi Segecin](https://github.com/rsegecin) from [this code](https://github.com/mvaneerde/blog/tree/develop/loopback-capture) by Matthew van Eerde.

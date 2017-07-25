@@ -117,7 +117,8 @@ HRESULT LoopbackCapture(
 
 	MMCKINFO ckRIFF = { 0 };
 	MMCKINFO ckData = { 0 };
-	hr = WriteWaveHeader(hFile, pwfx, &ckRIFF, &ckData);
+	if (hFile != NULL)
+		hr = WriteWaveHeader(hFile, pwfx, &ckRIFF, &ckData);
 	if (FAILED(hr)) {
 		// WriteWaveHeader does its own logging
 		return hr;
@@ -204,6 +205,7 @@ HRESULT LoopbackCapture(
 	DWORD dwWaitResult;
 
 	bool bDone = false;
+
 	for (UINT32 nPasses = 0; !bDone; nPasses++) {
 		// drain data while it is available
 		UINT32 nNextPacketSize;
@@ -232,26 +234,32 @@ HRESULT LoopbackCapture(
 				getchar();
 				return hr;
 			}
-
-			if (0 != dwFlags) {
+			
+			if (dwFlags != 0) {
 				ZeroMemory(pData, lBytesToWrite);
 			}
-
+			
 			if (0 == nNumFramesToRead) {
 				ERR(L"IAudioCaptureClient::GetBuffer said to read 0 frames on pass %u after %u frames", nPasses, *pnFrames);
 				getchar();
 				return E_UNEXPECTED;
 			}
+
 #pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
+			
+			if (hFile != NULL)
+			{
+				int lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
 
-			int lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
-			fwrite(pData, 1, lBytesWritten, stdout);
-
-			if (lBytesToWrite != lBytesWritten) {
-				ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
-				getchar();
-				return E_UNEXPECTED;
+				if (lBytesToWrite != lBytesWritten) {
+					ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
+					getchar();
+					return E_UNEXPECTED;
+				}
 			}
+
+			fwrite(pData, 1, lBytesToWrite, stdout);
+
 			*pnFrames += nNumFramesToRead;
 
 			hr = pAudioCaptureClient->ReleaseBuffer(nNumFramesToRead);
@@ -286,7 +294,9 @@ HRESULT LoopbackCapture(
 		}
 	} // capture loop
 
-	hr = FinishWaveFile(hFile, &ckData, &ckRIFF);
+	if (hFile != NULL)
+		hr = FinishWaveFile(hFile, &ckData, &ckRIFF);
+
 	if (FAILED(hr)) {
 		// FinishWaveFile does it's own logging
 		return hr;
