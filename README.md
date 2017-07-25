@@ -29,6 +29,8 @@ linco.exe -B 16 -C 2 -R 44100 --device 1 | plink -v 192.168.11.5 -l user -pw pas
 
 This code was an adaptation made by [Rinaldi Segecin](https://github.com/rsegecin) from [this code](https://github.com/mvaneerde/blog/tree/develop/loopback-capture) by Matthew van Eerde.
 
+To use the WLStream icon don't forget to change `wlstream.bat` file contained in the "Debug" directory with the correct linux host ipAddress and login infos.
+
 ToDo:
 
 Create a WLStream icon design.
