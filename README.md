@@ -1,6 +1,6 @@
 # WLStream
 
-The aim for this software is to be able to stream audio from a Windows output device so Pulse Audio will be able to play it back on a Linux host. The communication between the two is done with `plink` from Putty. `loopback-capture` prints on stdout data formated as `PCM floating signed 32 bits little endian` from a Windows output device. You also can list the available devices, choose a specific device, create a wav file and chose the PCM's size.
+The aim for this software is to be able to stream audio from a Windows output device so Pulse Audio will be able to play it back on a Linux host. The communication between the two is done with `plink` from Putty. `loopback-capture` prints on stdout data formated as `PCM floating signed 32 bits little endian` from a Windows output device. You also can list the available devices, choose a specific device, create a wav file and choose the PCM's size.
 
 ```
 loopback-capture.exe (Starts to dump audio data from the first playback device found)
