@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-#define DEFAULT_FILE L"loopback-capture.wav"
+#define DEFAULT_FILE L"WLStream.wav"
 
 void usage(LPCWSTR exe);
 HRESULT get_default_device(IMMDevice **ppMMDevice);
@@ -19,7 +19,7 @@ void usage(LPCWSTR exe) {
 		L"--int-16 \t attempts to coerce data to 16-bit integer format\n"
 		L"--lsdev \t list devices displays the long names of all active playback devices.\n"
 		L"\nUsage: %ls [--device \"Device long name\"] [--file \"file name\"] [--int-16]\n"
-		L"E.g: loopback-capture.exe --device \"Speakers(Realtek High Definition Audio)\" --file \"output.wav\"\n",
+		L"E.g: WLStream.exe --device \"Speakers(Realtek High Definition Audio)\" --file \"output.wav\"\n",
 		exe, exe
 	);
 }

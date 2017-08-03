@@ -1,5 +1,3 @@
-// main.cpp
-
 #include "common.h"
 
 int do_everything(int argc, LPCWSTR argv[]);
@@ -31,7 +29,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
 		return 0;
 	}
 
-	// create a "loopback capture has started" event
+	// create a "WLStream has started" event
 	HANDLE hStartedEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if (NULL == hStartedEvent) {
 		ERR(L"CreateEvent failed: last error is %u", GetLastError());
@@ -47,8 +45,8 @@ int do_everything(int argc, LPCWSTR argv[]) {
 	}
 	CloseHandleOnExit closeStopEvent(hStopEvent);
 
-	// create arguments for loopback capture thread
-	LoopbackCaptureThreadFunctionArguments threadArgs;
+	// create arguments for WLStream thread
+	WLStreamThreadFunctionArguments threadArgs;
 	threadArgs.hr = E_UNEXPECTED; // thread will overwrite this
 	threadArgs.pMMDevice = prefs.m_pMMDevice;
 	threadArgs.bInt16 = prefs.m_bInt16;
@@ -59,7 +57,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
 
 	HANDLE hThread = CreateThread(
 		NULL, 0,
-		LoopbackCaptureThreadFunction, &threadArgs,
+		WLStreamThreadFunction, &threadArgs,
 		0, NULL
 	);
 	if (NULL == hThread) {
@@ -156,7 +154,7 @@ int do_everything(int argc, LPCWSTR argv[]) {
 	}
 
 	if (0 != exitCode) {
-		ERR(L"Loopback capture thread exit code is %u; expected 0", exitCode);
+		ERR(L"WLStream thread exit code is %u; expected 0", exitCode);
 		return -__LINE__;
 	}
 

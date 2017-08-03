@@ -12,8 +12,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D5E40402-40F8-4CA2-AAA0-9A145F804F63}</ProjectGuid>
-    <RootNamespace>loopbackcapture</RootNamespace>
+    <RootNamespace>WLStream</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectName>WLStream</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -74,7 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="guid.cpp" />
-    <ClCompile Include="loopback-capture.cpp" />
+    <ClCompile Include="wlstream.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="prefs.cpp" />
   </ItemGroup>
@@ -82,7 +83,7 @@
     <ClInclude Include="cleanup.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="log.h" />
-    <ClInclude Include="loopback-capture.h" />
+    <ClInclude Include="wlstream.h" />
     <ClInclude Include="prefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

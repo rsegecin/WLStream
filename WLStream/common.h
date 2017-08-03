@@ -12,4 +12,4 @@
 #include "log.h"
 #include "cleanup.h"
 #include "prefs.h"
-#include "loopback-capture.h"
+#include "wlstream.h"

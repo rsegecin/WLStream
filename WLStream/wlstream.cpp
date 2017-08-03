@@ -1,8 +1,6 @@
-// loopback-capture.cpp
-
 #include "common.h"
 
-HRESULT LoopbackCapture(
+HRESULT WLStream(
 	IMMDevice *pMMDevice,
 	HMMIO hFile,
 	bool bInt16,
@@ -14,9 +12,9 @@ HRESULT LoopbackCapture(
 HRESULT WriteWaveHeader(HMMIO hFile, LPCWAVEFORMATEX pwfx, MMCKINFO *pckRIFF, MMCKINFO *pckData);
 HRESULT FinishWaveFile(HMMIO hFile, MMCKINFO *pckRIFF, MMCKINFO *pckData);
 
-DWORD WINAPI LoopbackCaptureThreadFunction(LPVOID pContext) {
-	LoopbackCaptureThreadFunctionArguments *pArgs =
-		(LoopbackCaptureThreadFunctionArguments*)pContext;
+DWORD WINAPI WLStreamThreadFunction(LPVOID pContext) {
+	WLStreamThreadFunctionArguments *pArgs =
+		(WLStreamThreadFunctionArguments*)pContext;
 
 	pArgs->hr = CoInitialize(NULL);
 	if (FAILED(pArgs->hr)) {
@@ -25,7 +23,7 @@ DWORD WINAPI LoopbackCaptureThreadFunction(LPVOID pContext) {
 	}
 	CoUninitializeOnExit cuoe;
 
-	pArgs->hr = LoopbackCapture(
+	pArgs->hr = WLStream(
 		pArgs->pMMDevice,
 		pArgs->hFile,
 		pArgs->bInt16,
@@ -37,7 +35,7 @@ DWORD WINAPI LoopbackCaptureThreadFunction(LPVOID pContext) {
 	return 0;
 }
 
-HRESULT LoopbackCapture(
+HRESULT WLStream(
 	IMMDevice *pMMDevice,
 	HMMIO hFile,
 	bool bInt16,
