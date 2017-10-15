@@ -18,7 +18,7 @@ E.g: WLStream.exe --device "Speakers(Realtek High Definition Audio)" --file "out
 Follows the command to stream the data:
 
 ```
-WLStream | plink -v 192.168.11.2 -l user -pw password "cat - | pacat --playback --format float32le --rate 48000 --volume 30000"
+WLStream | plink -v 192.168.11.2 -l user -pw password "cat - | pacat --latency-msec=10 --playback --format float32le --rate 44100 --volume 30000"
 ```
 
 People have also been able to stream from the Windows input device e.g. a microphone as shown in the command bellow:
