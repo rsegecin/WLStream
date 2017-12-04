@@ -21,6 +21,12 @@ Follows the command to stream the data:
 WLStream | plink -v 192.168.11.2 -l user -pw password "cat - | pacat --latency-msec=10 --playback --format float32le --rate 44100 --volume 30000"
 ```
 
+Enable OGG compression to reduce stream bandwidth (download [OGG Encoder](http://www.rarewares.org/ogg-oggenc.php) on Windows and "sudo apt-get install vorbis-tools" on Linux):
+
+```
+WLStream --int-16 2> wlstream.log | oggenc2 - -r -B 16 -q 8 -R 44100 -o - | plink -v 192.168.11.2 -l user -pw password "oggdec -R - -o - | pacat --latency-msec=100 --playback --format s16le --rate 44100 --volume 40000"
+```
+
 People have also been able to stream from the Windows input device e.g. a microphone as shown in the command bellow:
 
 ```
