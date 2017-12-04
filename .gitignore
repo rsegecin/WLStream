@@ -1,0 +1,9 @@
+WLStream.vcxproj.user
+
+*.db
+
+*.sdf
+
+WLStream/Debug/
+
+Debug/
